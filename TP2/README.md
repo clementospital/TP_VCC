@@ -8,6 +8,7 @@
 
 3. Voici les étapes d'acheminement du paquet :
    - arrivée par vpn-ext jusqu'au routeur.
+   - traduction de l'IP flottante en IP privée par le routeur (NAT).
    - routage du paquet vers net-discovery via la passerelle (donc subnet-discovery).
    - Si la VM appartient au groupe de sécurité, filtrage du paquet en fonction des règles du groupe.
    - Arrivée ou rejet du paquet à la VM.
@@ -37,7 +38,7 @@
 1. Une VM a besoin de sécurity group surtout si elle possède une adresse publique. Autrement elle pourrait se faire submerger de requêtes non nécessaire / en lien avec le service qu'elle expose.
 2. Voici le chemin de la requete :
    - La requète sort du PC host vers l'IP publique en dest
-   - Le routeur externe du réseau lit l'IP publique et route le paquet vers l'IP privée qu'il connait dans son sous réseau subnet-discovery
+   - Le routeur externe du réseau lit l’IP publique, la traduit en IP privée de la VM (NAT), puis route le paquet vers cette IP privée dans son sous-réseau subnet-discovery
    - Le paquet est acheminé à la VM
    - Le sécurity group regarde ses règles de filtrage et voit que le paquet est bien en protocole TCP sur le port 5000
    - Le sécurity group laisse entrer le paquet
@@ -45,7 +46,7 @@
 
 ## Etape 4
 
-1. La snapshot d'une image officielle n'est qu'une copie à l'instant T de l'image officielle. L'image officielle sert de base pour déployer de nouveaux services sur des snapshots de cette dernière.
+1. L'image officielle est un OS vierge qui est fourni par la plateforme. Un snapshot est une sauvegarde à un instant t précis de l'état d'une VM, on y garde tout les packages installés et configurés. Il est ensuite utilisé pour recréer des VM identiques à cet instant t. Par contre, les processus ne sont pas sauvegardés.
 2. Cela permet d'ajuster de façon dynamique les ressources aux besoins d'un service en fonction de l'évolution de ce service.
 3. Plusieurs contextes peuvent répondre à cela :
    - Déploiement d'une snapshot à partir d'une image qui fait face à un incident --> on recrée une snapshot de l'image (sorte de backup d'une version stable)
